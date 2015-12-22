@@ -1,0 +1,33 @@
+Herencia
+--------
+
+
+Single table strategy
+---------------------
+
+Si bien en las clases TwoWheeler y FourWheeler se especifica que ambas son entities y se deberia crear una tabla
+para cada clase, como estan heredando de vehicle, hibernate mapea todo lo de las clases hijas y las lleva al padre,
+por lo que termina creando una sola tabla (vehicle).
+
+Tambien se agrega una columna llamada DTYPE (discriminador), la cual especifica a que clase pertenece el registro de la tabla (el row)
+
+Se puede customizar la columna DTYPE con la annotation @DiscriminatorColumn
+
+
+
+Table per class strategy
+------------------------
+
+@Inheritance(strategy=InheritanceType.TABLE_PER_CLASS)
+
+Cada clase tiene su propia tabla.
+A las tablas hijas se le agregan columnas que representan las member variables del padre.
+Esto último trae el "inconveniente" de que se estan repitiendo datos. Esas columnas heredadas se repiten en los hijos y el padre. 
+
+
+
+Joined Strategy
+---------------
+
+Las tablas hijas tienen sus datos y un ID que hace referencia a la tabla padre.
+Las columnas heredadas se mantienen solamente en la tabla del padre. Las tablas hijas no repiten esas columnas.

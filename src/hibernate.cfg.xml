@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM 
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
+<hibernate-configuration>
+	<session-factory>
+		<!-- hibernate.dialect Especifica en que lenguaje hibernate se comunica con la DB -->
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>	
+		<property name="hibernate.connection.url">jdbc:mysql://localhost/javabrains</property>
+		<property name="hibernate.connection.username">javabrains</property>
+		<property name="hibernate.connection.password">javabrains</property>
+		
+		<!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+        
+        <!-- Disable the second-level cache  --> <!-- Esta es la configuracion por defecto -->
+        <!-- <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property> -->
+        
+        <!-- Cambiamos la config por default y habilitamos la cache de segundo nivel -->
+        <property name="hibernate.cache.use_second_level_cache">true</property> 
+		<property name="hibernate.cache.use_query_cache">true</property> 		
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property> <!-- hibernate-ehcache-5.0.2.Final.jar -->
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <!-- Si no existe una tabla para guardar un objeto, hibernate la crea por nosotros 
+        Como dice el comentario de arriba, si la property esta seteada en "create" perdemos los datos de la BD.
+        La property se puede setear en "update" para mantener la info, (tener cuidado si cambiamos el nombre de una tabla ya que la misma
+        quedara "duplicada" por no borrar la anterior) -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Names the annotated entity class -->
+        <mapping class="org.javabrains.koushik.dto.UserDetails"/>
+        <mapping class="org.javabrains.koushik.dto.Vehicle"/>
+        <mapping class="org.javabrains.koushik.dto.Address"/>
+        <mapping class="org.javabrains.koushik.dto.TwoWheeler"/>
+        <mapping class="org.javabrains.koushik.dto.FourWheeler"/>
+        <mapping class="org.javabrains.koushik.dto.UserDetailsSimplified"/>
+
+	</session-factory>
+</hibernate-configuration>
