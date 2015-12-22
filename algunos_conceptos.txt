@@ -1,0 +1,62 @@
+Transient object: un objecto que todavía no ha sido persistido en la base de datos por hibernate
+
+Persistent object: un objeto que ha sido persistido en la base de datos por hibernate
+
+
+Una vez que se realiza un session.save(object); Hibernate realiza un traqueo de ese objeto y cualquier cambio que se realice
+despues del save , generará una query update. Si hay más de un cambio después del save, se tomara en cuenta el último o lo que
+hibernate crea conveniente (todo esto antes del session.close() )
+
+
+Detached Object: una vez que se ha realizado un session.close(); El objeto que ha sido persistido pasa a ser llamado detached
+es decir Hibernate no va a traquear los cambios del objeto.
+
+
+
+
+-----
+Cache
+-----
+
+
+First level cache - session
+---------------------------
+
+La cache de primer nivel es a nivel de sesión. Una vez que se cierra la sesión, se pierde la cache.
+
+Viene habilitada por default, el ejemplo visto de esto es cuando se realizan 2 queries update e hibernate detecta cual usar 
+en vez de realizar las dos (ver linea 31 de TransientPersistentDetechedTest.java). 
+Este tipo de cache también aplica a queries select. 
+
+
+
+Second level cache (por default viene desactivada, se activa en el archivo de configuracion hibernate.cfg.xml)
+-------------------
+
+Escenarios:
+
+	Across sessions in an application (poder cachear despues de haber cerrado la sesión)
+	Across applications (diferentes sesiones a traves de diferentes aplicaciones que trabajan con el mismo conjunto de datos)
+	Across clusters (diferentes aplicaciones en distintos servers, que interactuan con la misma base)
+
+Un problema que puede surgir es si una o varias aplicaciones no usa hibernate, entonces no conocerían de la cache,
+accederían directamente a la base de datos y esto puede llevar a desincronización de los datos entre aplicaciones.
+
+
+Importante: utilizar la annotation @Cacheable debajo de las annotation @Entity para que hibernate pueda saber que esa
+entity puede ser cacheada. 
+
+Utilizando @Cache(usage=CacheConcurrencyStrategy.READ_WRITE) debajo de @Cacheable se le especifica a hibernate como debe
+ser tratada la cache, en este caso los datos van a ser de lectura y escritura por lo que hibernate va a realizar un traqueo
+del estado de la cache en comparación con la base de datos y actualizarla en caso de que sea necesario
+
+También se pueden especificar distintos valores como READ_ONLY.
+
+
+
+Query Cache
+-----------
+
+La misma utiliza una cache distinta a la de level 2 por lo que debe
+ser habilitada en el archivo hibernate.cfg.xml (ver linea 22)
+
